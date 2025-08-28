@@ -1,9 +1,8 @@
 "use client";
-
-import { useRef } from "react";
 import { projectsData } from "@/lib/data";
+import { useRef } from "react";
+import { useScroll, motion, useTransform } from "framer-motion";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 
 type ProjectProps = (typeof projectsData)[number];
@@ -15,26 +14,28 @@ export default function Project({
   imageUrl,
   url
 }: ProjectProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["0 1", "1.33 1"],
   });
-  const scaleProgess = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
-  const opacityProgess = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
+  const scaleProgess = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
+  const opacityProgess = useTransform(scrollYProgress, [0, 1], [0.7, 1]);
 
   return (
-    <motion.div
+    <motion.section
       ref={ref}
       style={{
         scale: scaleProgess,
         opacity: opacityProgess,
       }}
-      className="group mb-3 sm:mb-8 last:mb-0"
+      className="group bg-gray-100 w-full max-w-[42rem] border border-black/5 rounded-lg overflow-hidden relative mb-6 sm:mb-8 last:mb-0 hover:bg-gray-200 transition-all dark:text-white dark:bg-white/10 dark:hover:bg-white/20"
     >
-      <section className="bg-gray-100 max-w-[42rem] border border-black/5 rounded-lg overflow-hidden sm:pr-8 relative sm:h-[20rem] hover:bg-gray-200 transition sm:group-even:pl-8 dark:text-white dark:bg-white/10 dark:hover:bg-white/20">
-        <div className="pt-4 pb-7 px-5 sm:pl-10 sm:pr-2 sm:pt-10 sm:max-w-[50%] flex flex-col h-full sm:group-even:ml-[18rem]">
-           <h3 className="text-xl sm:text-2xl font-semibold">
+      <div className="flex flex-col sm:flex-row h-full">
+        {/* Text section */}
+        <div className="p-5 sm:p-10 flex flex-col justify-between sm:max-w-[50%]">
+          <div>
+            <h3 className="text-xl sm:text-2xl font-semibold">
               <Link
               href={url}
               target="_blank"
@@ -44,13 +45,16 @@ export default function Project({
               {title}
             </Link>
             </h3>
-          <p className="mt-2 leading-relaxed text-gray-700 dark:text-white/70">
-            {description}
-          </p>
-          <ul className="flex flex-wrap mt-4 gap-2 sm:mt-auto">
+            <p className="mt-2 text-sm sm:text-base leading-relaxed text-gray-700 dark:text-white/70">
+              {description}
+            </p>
+          </div>
+
+          {/* Tags */}
+          <ul className="flex flex-wrap gap-2 mt-4 sm:mt-6">
             {tags.map((tag, index) => (
               <li
-                className="bg-black/[0.7] px-3 py-1 text-[0.7rem] uppercase tracking-wider text-white rounded-full dark:text-white/70"
+                className="bg-black/70 px-3 py-1 text-[0.65rem] sm:text-[0.75rem] uppercase tracking-wider text-white rounded-full dark:text-white/70"
                 key={index}
               >
                 {tag}
@@ -59,24 +63,17 @@ export default function Project({
           </ul>
         </div>
 
-        <Image
-          src={imageUrl}
-          alt="Project I worked on"
-          quality={95}
-          className="absolute hidden sm:block top-8 -right-40 w-[28.25rem] rounded-t-lg shadow-2xl
-        transition 
-        group-hover:scale-[1.04]
-        group-hover:-translate-x-3
-        group-hover:translate-y-3
-        group-hover:-rotate-2
-
-        group-even:group-hover:translate-x-3
-        group-even:group-hover:translate-y-3
-        group-even:group-hover:rotate-2
-
-        group-even:right-[initial] group-even:-left-40"
-        />
-      </section>
-    </motion.div>
+        {/* Image */}
+        <div className="relative flex justify-center sm:justify-end sm:items-center w-full sm:w-[50%] p-4 sm:p-0">
+          <Image
+            src={imageUrl}
+            alt="Project I worked on"
+            quality={95}
+            className="w-full max-w-[20rem] sm:max-w-[22rem] h-auto rounded-lg shadow-2xl 
+              transition group-hover:-translate-x-2 group-hover:translate-y-2 group-hover:rotate-2 group-hover:scale-[1.04]"
+          />
+        </div>
+      </div>
+    </motion.section>
   );
 }
